@@ -4,17 +4,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 public class SqlRuParse {
     /**
@@ -96,16 +91,18 @@ public class SqlRuParse {
 
     public static void main(String[] args) throws Exception {
         SqlRuParse sqlRuParse = new SqlRuParse();
-        Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
-        Elements row = doc.select(".postslisttopic");
-        for (Element td : row) {
-            Element href = td.child(0);
-            System.out.println(href.attr("href"));
-            System.out.println(href.text());
-        }
-        Elements els = doc.select("[style=text-align:center].altCol");
-        for (Element td : els) {
-            System.out.println(sqlRuParse.convertDate(td.text()));
+        for (int i = 1; i <= 3; i++) {
+            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
+            Elements row = doc.select(".postslisttopic");
+            for (Element td : row) {
+                Element href = td.child(0);
+                System.out.println(href.attr("href"));
+                System.out.println(href.text());
+            }
+            Elements els = doc.select("[style=text-align:center].altCol");
+            for (Element td : els) {
+                System.out.println(sqlRuParse.convertDate(td.text()));
+            }
         }
     }
 }
