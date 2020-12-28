@@ -4,6 +4,9 @@ public class Post {
     private String vacancy;
     private String description;
     private Integer salary;
+    private Author author;
+
+
 
     public String getVacancy() {
         return vacancy;
@@ -27,6 +30,14 @@ public class Post {
 
     public void setSalary(Integer salary) {
         this.salary = salary;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
 }
