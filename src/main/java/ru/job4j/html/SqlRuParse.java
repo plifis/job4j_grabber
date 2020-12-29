@@ -3,20 +3,14 @@ package ru.job4j.html;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-
-import javax.crypto.MacSpi;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Map;
+import java.util.*;
 
-public class SqlRuParse {
+public class SqlRuParse implements Parse {
     /**
      * Конвертирование строки в объект класса Date
      * @param strDate дата в формате String
@@ -30,7 +24,7 @@ public class SqlRuParse {
             SimpleDateFormat sdf = new SimpleDateFormat("d MMM yy, hh:mm", formatSymbols.dateFormatSymbols);
             if (strDate.contains("сегодня")) {
                 date = this.getTimeToday(strDate, calendar);
-            } else if(strDate.contains("вчера")) {
+            } else if (strDate.contains("вчера")) {
                 date = this.getTimeYesterday(strDate, calendar);
             } else {
                 date = sdf.parse(strDate);
@@ -84,7 +78,49 @@ public class SqlRuParse {
             return calendar;
         }
 
-        static class ShortRusMonth {
+    /**
+     * Получаем список всех постов по ссылке
+     * @param link ссылка на раздел Вакансий
+     * @return Список всех тем в данном разделе
+     */
+    @Override
+    public List<Post> list(String link) {
+        List<Post> list = new ArrayList<>();
+        Post post;
+        for (int i = 1; i <= 5; i++) {
+            Document doc = null;
+            try {
+                doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
+                Elements row = doc.select(".postslisttopic");
+                for (Element td : row) {
+                    Element href = td.child(0);
+                    post = this.detail(href.attr("href"));
+                    list.add(post);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Получаем детали поста по ссылке
+     * @param link ссылка на пост
+     * @return Объект класса Post
+     */
+    @Override
+    public Post detail(String link) {
+        Post post = null;
+        try {
+            post = this.getPost(link);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return post;
+    }
+
+    static class ShortRusMonth {
         private final DateFormatSymbols dateFormatSymbols = new DateFormatSymbols() {
             @Override
             public String[] getMonths() {
@@ -94,11 +130,17 @@ public class SqlRuParse {
         };
     }
 
+    /**
+     * Получаем сведения (автор String name, String description текст, String strData дата поста) о посте по ссылке
+     * @param url ссылка на пост
+     * @return Объект класса Post полученный по входной ссылке
+     * @throws IOException исключение ввода-вывода
+     * @throws ParseException исключение при парсинге строки по предлагемому шаблону
+     */
     public Post getPost(String url) throws IOException, ParseException {
         Document doc = Jsoup.connect(url).get();
         Elements descs = doc.select(".msgBody");
         String name = descs.get(0).child(0).text();
-        System.out.println(descs.get(0).child(0).text());
         String description = descs.get(1).text();
         Elements dates = doc.select(".msgFooter");
         Element date = dates.get(0);
@@ -108,8 +150,10 @@ public class SqlRuParse {
         return new Post(name, description, url, this.convertDate(strDate));
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SqlRuParse sqlRuParse = new SqlRuParse();
+        List<Post> list = sqlRuParse.list("https://www.sql.ru/forum/job-offers/");
+        System.out.println(list.toString() + System.lineSeparator());
 //        for (int i = 1; i <= 5; i++) {
 //            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
 //            Elements row = doc.select(".postslisttopic");
@@ -123,8 +167,8 @@ public class SqlRuParse {
 //                System.out.println(sqlRuParse.convertDate(td.text()));
 //            }
 //        }
-        Post post = sqlRuParse
-                .getPost("https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
-        System.out.println(post);
+//        Post post = sqlRuParse
+//                .getPost("https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
+//        System.out.println(post);
     }
 }

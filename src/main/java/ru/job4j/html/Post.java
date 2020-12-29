@@ -8,7 +8,7 @@ public class Post {
     private String url;
     private Date date;
 
-    public Post (String name, String description, String url, Date date) {
+    public Post(String name, String description, String url, Date date) {
         this.name = name;
         this.description = description;
         this.url = url;
@@ -49,11 +49,10 @@ public class Post {
 
     @Override
     public String toString() {
-        return "Post{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", url='" + url + '\'' +
-                ", date=" + date +
-                '}';
+        return "Post{"
+                + "name='" + name + '\'' + System.lineSeparator()
+                + " description='" + description + '\'' + System.lineSeparator()
+                + " url='" + url + '\'' + System.lineSeparator()
+                + " date=" + date  + '}' + System.lineSeparator();
     }
 }
