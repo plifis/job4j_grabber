@@ -1,19 +1,19 @@
 package ru.job4j.html;
 
+import java.util.Date;
+
 public class Post {
-    private String vacancy;
+    private String name;
     private String description;
-    private Integer salary;
-    private Author author;
+    private String url;
+    private Date date;
 
-
-
-    public String getVacancy() {
-        return vacancy;
+    public String getName() {
+        return name;
     }
 
-    public void setVacancy(String vacancy) {
-        this.vacancy = vacancy;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -24,20 +24,19 @@ public class Post {
         this.description = description;
     }
 
-    public Integer getSalary() {
-        return salary;
+    public String getUrl() {
+        return url;
     }
 
-    public void setSalary(Integer salary) {
-        this.salary = salary;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Date getDate() {
+        return date;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setDate(Date date) {
+        this.date = date;
     }
-
 }
