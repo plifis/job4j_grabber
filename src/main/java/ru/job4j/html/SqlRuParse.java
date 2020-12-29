@@ -3,13 +3,18 @@ package ru.job4j.html;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+
+import javax.crypto.MacSpi;
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 public class SqlRuParse {
     /**
@@ -54,7 +59,7 @@ public class SqlRuParse {
      * содержащего вчерашнюю дату и время суток из входящей строки
      */
         private Date getTimeYesterday(String strDate, Calendar calendar) {
-            calendar = this.getTimeOfDay(strDate, calendar);
+            this.getTimeOfDay(strDate, calendar);
             calendar.add(Calendar.DAY_OF_MONTH, -1);
             return calendar.getTime();
         }
@@ -89,20 +94,37 @@ public class SqlRuParse {
         };
     }
 
+    public Post getPost(String url) throws IOException, ParseException {
+        Document doc = Jsoup.connect(url).get();
+        Elements descs = doc.select(".msgBody");
+        String name = descs.get(0).child(0).text();
+        System.out.println(descs.get(0).child(0).text());
+        String description = descs.get(1).text();
+        Elements dates = doc.select(".msgFooter");
+        Element date = dates.get(0);
+        int endTimeSubStr = date.text().indexOf(":");
+        String strDate = date.text()
+                                .substring(0, endTimeSubStr + 3);
+        return new Post(name, description, url, this.convertDate(strDate));
+    }
+
     public static void main(String[] args) throws Exception {
         SqlRuParse sqlRuParse = new SqlRuParse();
-        for (int i = 1; i <= 5; i++) {
-            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
-            Elements row = doc.select(".postslisttopic");
-            for (Element td : row) {
-                Element href = td.child(0);
-                System.out.println(href.attr("href"));
-                System.out.println(href.text());
-            }
-            Elements els = doc.select("[style=text-align:center].altCol");
-            for (Element td : els) {
-                System.out.println(sqlRuParse.convertDate(td.text()));
-            }
-        }
+//        for (int i = 1; i <= 5; i++) {
+//            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
+//            Elements row = doc.select(".postslisttopic");
+//            for (Element td : row) {
+//                Element href = td.child(0);
+//                System.out.println(href.attr("href"));
+//                System.out.println(href.text());
+//            }
+//            Elements els = doc.select("[style=text-align:center].altCol");
+//            for (Element td : els) {
+//                System.out.println(sqlRuParse.convertDate(td.text()));
+//            }
+//        }
+        Post post = sqlRuParse
+                .getPost("https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
+        System.out.println(post);
     }
 }

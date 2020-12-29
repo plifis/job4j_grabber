@@ -8,6 +8,13 @@ public class Post {
     private String url;
     private Date date;
 
+    public Post (String name, String description, String url, Date date) {
+        this.name = name;
+        this.description = description;
+        this.url = url;
+        this.date = date;
+    }
+
     public String getName() {
         return name;
     }
@@ -38,5 +45,15 @@ public class Post {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", url='" + url + '\'' +
+                ", date=" + date +
+                '}';
     }
 }
