@@ -1,10 +1,9 @@
-package ru.job4j.html;
+package ru.job4j.grabber;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ru.job4j.html.Parse;
 
 import java.io.IOException;
 import java.text.DateFormatSymbols;
@@ -90,7 +89,7 @@ public class SqlRuParse implements Parse {
         List<Post> list = new ArrayList<>();
         Post post;
         for (int i = 1; i <= 5; i++) {
-            Document doc = null;
+            Document doc;
             try {
                 doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
                 Elements row = doc.select(".postslisttopic");
