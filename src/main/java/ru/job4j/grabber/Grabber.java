@@ -4,6 +4,9 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,7 +28,7 @@ public class Grabber implements Grab {
     }
 
     public void cfg() throws IOException {
-        try (InputStream in = new FileInputStream("c:\\projects\\job4j_grabber\\src\\main\\resources\\rabbit.properties")) {
+        try (InputStream in = PsqlStore.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
             cfg.load(in);
         }
     }
@@ -55,12 +58,32 @@ public class Grabber implements Grab {
             JobDataMap map = context.getJobDetail().getJobDataMap();
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
-            String link = (String) map.get("link");
+            String link = (String) map.get("source.link");
             List<Post> list = parse.list(link);
             for (Post p : list) {
                 store.save(p);
             }
         }
+    }
+    public void web(Store store) {
+        new Thread(() -> {
+            try (ServerSocket server = new ServerSocket(Integer.parseInt(cfg.getProperty("web.interface.port")))) {
+                while (!server.isClosed()) {
+                    Socket socket = server.accept();
+                    try (OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream(), "windows-1251")) {
+                        out.write("HTTP/1.1 200 OK\r\n\r\n");
+                        for (Post post : store.getAll()) {
+                            out.write(post.toString());
+                            out.write(System.lineSeparator());
+                        }
+                    } catch (IOException io) {
+                        io.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
 
@@ -70,5 +93,6 @@ public class Grabber implements Grab {
         Scheduler scheduler = grab.scheduler();
         Store store = grab.store();
         grab.init(new SqlRuParse(), store, scheduler);
+        grab.web(store);
     }
 }
