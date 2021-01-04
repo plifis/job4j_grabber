@@ -18,7 +18,7 @@ public class SqlRuParse implements Parse {
      * @return дата в формате Date
      * @throws ParseException исключение при парсинге строки по предлагемому шаблону
      */
-        public Date convertDate(String strDate) throws ParseException {
+    public Date convertDate(String strDate) throws ParseException {
             ShortRusMonth formatSymbols = new ShortRusMonth();
             Calendar calendar = new GregorianCalendar();
             Date date;
@@ -53,7 +53,7 @@ public class SqlRuParse implements Parse {
      * @return дату в виде объекта класса Date,
      * содержащего вчерашнюю дату и время суток из входящей строки
      */
-        private Date getTimeYesterday(String strDate, Calendar calendar) {
+    private Date getTimeYesterday(String strDate, Calendar calendar) {
             this.getTimeOfDay(strDate, calendar);
             calendar.add(Calendar.DAY_OF_MONTH, -1);
             return calendar.getTime();
