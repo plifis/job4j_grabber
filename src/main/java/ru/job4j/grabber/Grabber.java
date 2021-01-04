@@ -6,7 +6,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -17,6 +16,10 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class Grabber implements Grab {
     private final Properties cfg = new Properties();
 
+    /**
+     * Экземпляр хранилища (БД)
+     * @return хранилище (БД)
+     */
     public Store store() {
         return new PsqlStore(this.cfg);
     }
@@ -27,12 +30,24 @@ public class Grabber implements Grab {
         return scheduler;
     }
 
+    /**
+     * Получаем необходимые свойства(адрес БД, порт, интервал, учетные данные и тд) для выполнения
+     * @throws IOException исключения ввода-вывода
+     */
     public void cfg() throws IOException {
         try (InputStream in = PsqlStore.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
             cfg.load(in);
         }
     }
 
+    /**
+     * Инициализация(настройка) Планировщика, добавление в Карту парсера, хранилища,
+     * учтановка интервала и триггера
+     * @param parse Объект выполняющий парсинг цели
+     * @param store Хранилище записей (результатов парсинга)
+     * @param scheduler Планировщик выполняющий периодический запуск выполнения Работ
+     * @throws SchedulerException исключения планировщика
+     */
     @Override
     public void init(Parse parse, Store store, Scheduler scheduler) throws SchedulerException {
         JobDataMap data = new JobDataMap();
@@ -53,6 +68,12 @@ public class Grabber implements Grab {
 
     public static class GrabJob implements Job {
 
+        /**
+         * Метод выполняет Работу по получение всех записей по ссылке (метод List)
+         * и сохраняет в хранилище (БД) (метод save)
+         * @param context контекст в котором выполняется Работа
+         * @throws JobExecutionException исключение при выполнении Работы
+         */
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             JobDataMap map = context.getJobDetail().getJobDataMap();
@@ -65,6 +86,12 @@ public class Grabber implements Grab {
             }
         }
     }
+
+    /**
+     * Метод получает все записи из хранилища store
+     * и отображает на Веб форме браузера по указаннмоу порту в настройках
+     * @param store Хранилище (БД) с записями
+     */
     public void web(Store store) {
         new Thread(() -> {
             try (ServerSocket server = new ServerSocket(Integer.parseInt(cfg.getProperty("web.interface.port")))) {
