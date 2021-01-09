@@ -4,7 +4,7 @@ jdk:
 
 env:
   global:
-    - CODECOV_TOKEN="092d313e-4a14-4145-86c4-47ef588288e8"
+    - CODECOV_TOKEN="79f905a7-dee0-4c09-84d8-1e74c8bf32c0"
 
 
 
