@@ -3,7 +3,8 @@
 Стэк технологий:
 - ![](https://img.shields.io/badge/Java8-8%2B-orange); 
 - ![](https://img.shields.io/badge/SQL-PostgreSQL-blue);
-- ![](https://img.shields.io/badge/Unit--test-JUnit%2C%20Mock-yellow).
+- ![](https://img.shields.io/badge/Unit--test-JUnit%2C%20Mock-yellow);
+- Quartz (планировщик).
 
 [![Build Status](https://app.travis-ci.com/plifis/job4j_grabber.svg?branch=master)](https://app.travis-ci.com/plifis/job4j_grabber)
 
