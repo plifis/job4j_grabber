@@ -5,7 +5,7 @@
 - ![](https://img.shields.io/badge/SQL-PostgreSQL-blue);
 - ![](https://img.shields.io/badge/Unit--test-JUnit%2C%20Mock-yellow).
 
-[![Build Status](https://travis-ci.org/pliris/job4j_grabber.svg?branch=master)](https://travis-ci.org/pliris/job4j_grabber)
+[![Build Status](https://app.travis-ci.com/plifis/job4j_grabber.svg?branch=master)](https://app.travis-ci.com/plifis/job4j_grabber)
 
 [![codecov](https://codecov.io/gh/pliris/job4j_grabber/branch/master/graph/badge.svg?token=bi0tZ2dUTQ)](https://codecov.io/gh/pliris/job4j_grabber)
 
