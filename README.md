@@ -7,6 +7,5 @@
 
 [![Build Status](https://app.travis-ci.com/plifis/job4j_grabber.svg?branch=master)](https://app.travis-ci.com/plifis/job4j_grabber)
 
-[![codecov](https://codecov.io/gh/pliris/job4j_grabber/branch/master/graph/badge.svg?token=bi0tZ2dUTQ)](https://codecov.io/gh/pliris/job4j_grabber)
-
+[![codecov](https://codecov.io/gh/plifis/job4j_grabber/branch/master/graph/badge.svg?token=bi0tZ2dUTQ)](https://codecov.io/gh/plifis/job4j_grabber)
 
